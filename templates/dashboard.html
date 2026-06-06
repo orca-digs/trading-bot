@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Trading Dashboard</title>
+    <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+    <style>
+        body {
+            background: #0d1117;
+            color: #fff;
+            font-family: Arial;
+            text-align: center;
+        }
+        .card {
+            display: inline-block;
+            background: #161b22;
+            padding: 20px;
+            margin: 10px;
+            border-radius: 10px;
+            width: 180px;
+        }
+        h1 { color: #00ffcc; }
+    </style>
+</head>
+
+<body>
+
+<h1>🚀 Trading Bot Dashboard</h1>
+
+<div class="card">Total Trades<br><h2 id="total">0</h2></div>
+<div class="card">Wins<br><h2 id="wins">0</h2></div>
+<div class="card">Losses<br><h2 id="losses">0</h2></div>
+<div class="card">Win Rate<br><h2 id="winrate">0%</h2></div>
+<div class="card">PnL<br><h2 id="pnl">0</h2></div>
+<div class="card">AI Probability<br><h2 id="prob">0%</h2></div>
+
+<script>
+    const socket = io();
+
+    socket.on("update", data => {
+        document.getElementById("prob").innerText = data.prob + "%";
+
+        document.getElementById("total").innerText = data.stats.total;
+        document.getElementById("wins").innerText = data.stats.wins;
+        document.getElementById("losses").innerText = data.stats.losses;
+        document.getElementById("winrate").innerText = data.stats.winrate 
++ "%";
+        document.getElementById("pnl").innerText = data.stats.pnl;
+    });
+
+    fetch("/stats")
+        .then(res => res.json())
+        .then(data => {
+            document.getElementById("total").innerText = data.total;
+            document.getElementById("wins").innerText = data.wins;
+            document.getElementById("losses").innerText = data.losses;
+            document.getElementById("winrate").innerText = data.winrate + 
+"%";
+            document.getElementById("pnl").innerText = data.pnl;
+        });
+</script>
+
+</body>
+</html>
